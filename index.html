@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Press "X" to JSON</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link rel="shortcut icon" href="close-button-300px.png" type="image/x-icon">
+</head>
+<body>
+<div class="container">
+    <div class="jumbotron">
+        <h1>Press "X" to JSON</h1>
+        <p>Make your JSON easy-to-read in one click</p>
+        <!-- Place this tag where you want the button to render. -->
+        <a class="github-button" href="https://github.com/dukeimg/json/subscription" data-style="mega" data-count-href="/dukeimg/json/watchers" data-count-api="/repos/dukeimg/json#subscribers_count" data-count-aria-label="# watchers on GitHub" aria-label="Watch dukeimg/json on GitHub">Watch</a>
+    </div>
+    <form>
+        <div class="form-group">
+            <label for="str">JSON string</label>
+            <div class="input-group">
+                <input type="email" class="form-control" id="str" placeholder="Your string goes here...">
+                <span class="input-group-btn">
+                    <button id='x' class="btn btn-primary">X</button>
+                </span>
+            </div>
+        </div>
+    </form>
+    <p id="msg"></p>
+    <p style="color: red" id="err"></p>
+    <pre>
+
+    </pre>
+</div>
+<textarea id="dummy" style="position: absolute; left: -9999px;"></textarea>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/clipboard.min.js"></script>
+<script>
+    function copyToClipboard(val){
+        var dummy = $('#dummy');
+        dummy.val(val);
+        console.log(dummy);
+        dummy.select();
+        var res = document.execCommand("copy");
+        //document.body.removeChild(dummy);
+        return res;
+    }
+
+    $("#x").click(function (event) {
+        event.preventDefault();
+        var obj = JSON.parse($('#str').val());
+        if (obj == null) {
+            $("#err").text('Invalid JSON');
+            return false;
+        }
+        while (typeof obj == 'string') {
+            obj = JSON.parse(obj);
+        }
+
+        var pre = $('pre');
+        pre.html(JSON.stringify(obj, null, 4));
+
+        if (copyToClipboard(pre.html())) {
+            $("#msg").text('Following JSON was copied to your clipboard');
+        }
+    })
+</script>
+<script async defer src="https://buttons.github.io/buttons.js"></script>
+</body>
+</html>

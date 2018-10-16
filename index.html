@@ -41,11 +41,21 @@
     function copyToClipboard(val){
         var dummy = $('#dummy');
         dummy.val(val);
-        console.log(dummy);
         dummy.select();
         var res = document.execCommand("copy");
-        //document.body.removeChild(dummy);
         return res;
+    }
+
+    function parseKeys(obj) {
+        Object.keys(obj).forEach(function (key) {
+            try {
+                if (typeof obj === 'object') {
+                    parseKeys(obj[key]);
+                }
+                obj[key] = JSON.parse(obj[key]);
+                parseKeys(obj[key]);
+            } catch (e) { }
+        })
     }
 
     $("#x").click(function (event) {
@@ -55,12 +65,14 @@
             $("#err").text('Invalid JSON');
             return false;
         }
-        while (typeof obj == 'string') {
+        while (typeof obj === 'string') {
             obj = JSON.parse(obj);
         }
 
+        parseKeys(obj);
+
         var pre = $('pre');
-        pre.html(JSON.stringify(obj, null, 4));
+        pre.html(JSON.stringify(obj, null, 2));
 
         if (copyToClipboard(pre.html())) {
             $("#msg").text('Following JSON was copied to your clipboard');
